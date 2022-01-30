@@ -6,7 +6,7 @@ import {CREATE_PRODUCT, DELETE_PRODUCT, UPDATE_PRODUCT} from "./Mutations/Produc
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
-        getAllUsers:GET_ALL_PRODUCTS
+        getAllProducts:GET_ALL_PRODUCTS
     }, 
 });
 

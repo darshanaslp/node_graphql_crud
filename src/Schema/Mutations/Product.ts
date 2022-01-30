@@ -31,30 +31,16 @@ export const UPDATE_PRODUCT = {
     async resolve(parent: any, args: any) {
         const { name, slug, brand } = args;
         const product = await Products.findOne({ name: name })
-        if(!product){
+        if (!product) {
             throw new Error("Product Not Exist");
-        }
-
-        //const ProductName = product?.slug;
-
-        if (product) {
+        } try {
             await Products.update({ slug: slug }, { brand: brand })
 
             return { successful: true, message: "Product Update" }
 
-        } else {
+        } catch {
             throw new Error("Prouct Not Match");
         }
-
-
-        // try  {
-        //     await Products.update({ slug: slug }, { brand: brand })
-
-        //     return { successful: true, message: "Product Update" }
-
-        // } catch {
-        //     throw new Error("Prouct Not Match");
-        // }
 
     },
 }
@@ -70,7 +56,7 @@ export const DELETE_PRODUCT = {
         const id = args.id;
         await Products.delete(id);
 
-        return { successful: true, message: "DELETE WORKED" }
+        return { successful: true, message: "Product Deleted" }
 
     },
 }

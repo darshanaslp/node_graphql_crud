@@ -1,103 +1,88 @@
-//import supertest from "supertest";
-// import { MongoMemoryServer } from "mongodb-memory-server";
-// import createServer from "../utils/server";
-//import mongoose from "mongoose";
-import express from "express";
+import * as util from 'util';
+import { exec } from 'child_process';
+
 import { graphqlHTTP } from "express-graphql";
-// import { createProduct } from "../service/product.service";
-import { GraphQLObjectType, GraphQLID, GraphQLString,GraphQLBoolean } from "graphql";
-//import { signJwt } from "../utils/jwt.utils";
+import { schema } from "../Schema";
 
-const app = express();
 
-const userId = new GraphQLID();
 
-export const productPayload = {
-  user: userId,
-  title: "Canon EOS 1500D DSLR Camera with 18-55mm Lens",
-  description:
-    "Designed for first-time DSLR owners who want impressive results straight out of the box, capture those magic moments no matter your level with the EOS 1500D. With easy to use automatic shooting modes, large 24.1 MP sensor, Canon Camera Connect app integration and built-in feature guide, EOS 1500D is always ready to go.",
-  price: 879.99,
-  image: "https://i.imgur.com/QlRphfQ.jpg",
-};
+const pExec = util.promisify(exec);
 
-export const userPayload = {
-  _id: userId,
-  email: "jane.doe@example.com",
-  name: "Jane Doe",
-};
+const API = 'http://localhost:3000/';
+const CMD_SEED_DATABASE = `${__dirname}/../seed.sh`;
 
-describe("product", () => {
-//   beforeAll(async () => {
-//     const mongoServer = await MongoMemoryServer.create();
-
-//     //await mongoose.connect(mongoServer.getUri());
-//   });
-
-  afterAll(async () => {
-   //await mongoose.disconnect();
-    //await mongoose.connection.close();
+describe('Getting Product items', () => {
+  beforeAll(async () => {
+    await pExec(CMD_SEED_DATABASE);
   });
 
-  describe("get product route", () => {
-    describe("given the product does not exist", () => {
-      it("should return a 404", async () => {
-        const productId = "product-123";
+  it('Retrieves the Product items in default order', async () => {
+    const query = `
+        query {
+          getAllProducts {
+            id
+            name
+            slug
+            brand
+          }
+        }
+        `;
 
-        await supertest(app).get(`/api/products/${productId}`).expect(404);
-      });
-    });
+    const response = await rp({ method: 'POST', uri: API, body: { query }, json: true });
+    expect(response).toMatchSnapshot();
+  });
+});
 
-    describe("given the product does exist", () => {
-      it("should return a 200 status and the product", async () => {
-        // @ts-ignore
-        const product = await createProduct(productPayload);
-
-        const { body, statusCode } = await supertest(app).get(
-          `/api/products/${product.productId}`
-        );
-
-        expect(statusCode).toBe(200);
-
-        expect(body.productId).toBe(product.productId);
-      });
-    });
+describe('Tests that can be performed on the Todo Mutation', () => {
+  it('should not allow an authenticated user create a TODO ', async () => {
+    const CREATE_PRODUCT = schema`
+      mutation {
+        createProduct(name:"food",slug:"item",brand:"local"){
+          name
+          slug
+          brad
+        }
+      }
+      `;
+    await expect(graphqlHTTP.mutate({
+      mutation: CREATE_PRODUCT
+    })).rejects.toThrowError("Authentication required");
   });
 
-  describe("create product route", () => {
-    describe("given the user is not logged in", () => {
-      it("should return a 403", async () => {
-        const { statusCode } = await supertest(app).post("/api/products");
+  it('should update a TODO', async () => {
 
-        expect(statusCode).toBe(403);
-      });
+    const variables = {
+      name: test
+    }
+
+    const updateProduct = gql`
+    mutation {
+      updateProduct(name: "Food",slug:"name1",brand:"International"){
+        message
+      }
+    }
+    `;
+    const updatedTodo = await graphqlHTTP.muate({
+      mutation: updateProduct,variables
     });
+    expect(updatedTodo.data.updateTodo.slug).toBe('name1');
+    expect(updatedTodo.data.updateTodo.brand).toBe('internation');
+  });
 
-    describe("given the user is logged in", () => {
-      it("should return a 200 and create the product", async () => {
-        //const jwt = signJwt(userPayload);
-
-        const { statusCode, body } = await supertest(app)
-          .post("/api/products")
-        //   .set("Authorization", `Bearer ${jwt}`)
-          .send(productPayload);
-
-        expect(statusCode).toBe(200);
-
-        expect(body).toEqual({
-          __v: 0,
-          _id: expect.any(String),
-          createdAt: expect.any(String),
-          description:
-            "Designed for first-time DSLR owners who want impressive results straight out of the box, capture those magic moments no matter your level with the EOS 1500D. With easy to use automatic shooting modes, large 24.1 MP sensor, Canon Camera Connect app integration and built-in feature guide, EOS 1500D is always ready to go.",
-          image: "https://i.imgur.com/QlRphfQ.jpg",
-          price: 879.99,
-          productId: expect.any(String),
-          title: "Canon EOS 1500D DSLR Camera with 18-55mm Lens",
-          updatedAt: expect.any(String),
-          user: expect.any(String),
-        });
-      });
+  it('should delete a TODO', async () => {
+    const variables = {
+      id: 1
+    }
+    const deleteTodo = gql`
+    mutation {
+      deleteProduct(id: "1"){
+        id
+      }
+    }
+    `;
+    const deletedTodo = await graphqlHTTP.mutate({
+      mutation: deleteTodo, variables
     });
+    expect(variables).toBe(false);
   });
 });

@@ -8,7 +8,7 @@ Build a basic CRUD backend application in NodeJS with GraphQL & MySQL.
 
 [NodeJS](https://nodejs.org/)
 [TypeScript](https://www.typescriptlang.org/)
-[ExressJs](https://nestjs.com/)
+[ExressJs](https://expressjs.com/)
 [TypeGraphQL](https://typegraphql.com/)
 [TypeORM](https://typeorm.io/)
 [MySQL](https://www.mysql.com/)
@@ -45,7 +45,7 @@ const main = async () => {
         password: "",
         logging: true,
         synchronize: false,
-        entities: [],
+        entities: [Product],
     });
 
 
@@ -83,14 +83,16 @@ Start the server instance in watch mode.
 npm run start:dev
 ```
 
-Goto the GraphQL - http://localhost:4000/graphql.
+Goto the GraphQL - http://localhost:3000/graphql.
 
 1. Create a new user
 
    ```graphql
    mutation {
-     createProduct(input: { name: "Food" }) {
-       id
+     createProduct(name:"food",slug:"item",brand:"local"){
+       name
+       slug
+       brad
      }
    }
    ```
@@ -101,7 +103,9 @@ Goto the GraphQL - http://localhost:4000/graphql.
    {
      "data": {
        "createProduct": {
-         "id": "95678594"
+         "name": "food",
+          "slug": "item",
+          "brand": "local"
        }
      }
    }
@@ -111,9 +115,11 @@ Goto the GraphQL - http://localhost:4000/graphql.
 
    ```graphql
    query {
-     users {
+     getAllProducts {
        id
        name
+       slug
+       brand
      }
    }
    ```
@@ -125,8 +131,10 @@ Goto the GraphQL - http://localhost:4000/graphql.
      "data": {
        "products": [
          {
-           "id": "95678594",
-           "name": "Food"
+           "id": "1",
+           "name": "Food",
+           "slug": "Food Item",
+           "brand": "local",
          }
        ]
      }
@@ -143,37 +151,9 @@ Start the server instance in watch mode.
 npm run start:dev
 ```
 
-Goto the GraphQL Playground - http://localhost:4000/graphql.
+Goto the GraphQL  - http://localhost:3000/graphql.
 
-1. Create some users
-
-   ```graphql
-   mutation {
-     createProduct(input: { name: "Food" }) {
-       id
-     }
-    createProduct(input: { name: "Drink" }) {
-       id
-     }
-   }
-   ```
-
-   Output:
-
-   ```json
-   {
-     "data": {
-       "a": {
-         "id": "6ad2b68d-15a8-4e3e-9062-6343324faa7e"
-       },
-       "b": {
-         "id": "eb777cfa-65d4-4a36-9344-5452284647e6"
-       }
-     }
-   }
-   ```
-
-2. Query the product
+ Query the product
 
    ```graphql
    query {
@@ -203,40 +183,48 @@ Goto the GraphQL Playground - http://localhost:4000/graphql.
    }
    ```
 
-3. Update one of the product by the id
+ Update one of the product by the name
 
    ```graphql
    mutation {
-     updateProduct(name: "Food",slug:"name1",brand:"International")
+     updateProduct(name: "Food",slug:"name1",brand:"International"){
+       message
+     }
    }
    ```
 
    Output :
 
    ```json
-   {
-     "data": {
-       "updateProduct": "6ad2b68d-15a8-4e3e-9062-6343324faa7e"
-     }
-   }
+    {
+    "data": {
+      "updateProduct": {
+        "message": "Product Update"
+      }
+    }
+  }
    ```
 
-4. Delete one of the product by the id
+ Delete one of the product by the id
 
    ```graphql
    mutation {
-     deleteProduct(id: "6ad2b68d-15a8-4e3e-9062-6343324faa7e")
+     deleteProduct(id: "1"){
+       id
+     }
    }
    ```
 
    Output :
 
    ```json
-   {
-     "data": {
-       "deleteProduct": "6ad2b68d-15a8-4e3e-9062-6343324faa7e"
-     }
-   }
+      {
+      "data": {
+        "deleteProduct": {
+          "message": "Product Deleted "
+        }
+      }
+    }
    ```
 
 
