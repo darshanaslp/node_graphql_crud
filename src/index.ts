@@ -13,7 +13,7 @@ const main = async () => {
         username: "root",
         password: "",
         logging: true,
-        synchronize: false,
+        synchronize: true,
         entities: [Products],
     });
 

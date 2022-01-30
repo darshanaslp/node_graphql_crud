@@ -29,7 +29,7 @@ Then to statr project you need to run these command in node console
 Start the server in watch mode.
 
 ```bash
-npm run start:dev
+npm run dev
 ```
 
 
