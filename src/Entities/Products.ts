@@ -3,7 +3,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Products extends BaseEntity {
-
+//database struture colomns
     @PrimaryGeneratedColumn()
     id!: number;
 

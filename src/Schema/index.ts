@@ -4,6 +4,7 @@ import {CREATE_PRODUCT, DELETE_PRODUCT, UPDATE_PRODUCT} from "./Mutations/Produc
 
 
 const RootQuery = new GraphQLObjectType({
+     // Graphql Query
     name: "RootQuery",
     fields: {
         getAllProducts:GET_ALL_PRODUCTS
@@ -11,6 +12,7 @@ const RootQuery = new GraphQLObjectType({
 });
 
 const Mutation = new GraphQLObjectType({
+   // Graphql mutattions
     name: "Mutation",
     fields: {
         createProduct:CREATE_PRODUCT,

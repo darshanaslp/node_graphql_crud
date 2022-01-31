@@ -7,6 +7,7 @@ import {schema} from "./Schema";
 import {Products} from "./Entities/Products"
 
 const main = async () => {
+    //mysql conncetion config
     await createConnection({
         type: "mysql",
         database: "GraphqlCrud",
@@ -32,5 +33,5 @@ const main = async () => {
 }
 
 main().catch((err) => {
-    console.log(err);
+    console.log("connection",err);
 });

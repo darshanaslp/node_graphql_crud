@@ -3,7 +3,8 @@ import { ProductType } from "../TypeDefs/Product";
 import { MessageType } from "../TypeDefs/Messages";
 import { Products } from "../../Entities/Products"
 
-
+//Mutation
+//create product
 export const CREATE_PRODUCT = {
     type: ProductType,
     args: {
@@ -19,7 +20,7 @@ export const CREATE_PRODUCT = {
     },
 }
 
-
+//update Product
 export const UPDATE_PRODUCT = {
     type: MessageType,
     args: {
@@ -45,7 +46,7 @@ export const UPDATE_PRODUCT = {
     },
 }
 
-
+//delete Product
 export const DELETE_PRODUCT = {
     type: MessageType,
     args: {
