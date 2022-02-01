@@ -1,8 +1,16 @@
 import { Connection } from "typeorm";
 
-import { graphqlTestCall } from "./TestCall";
+//import { graphqlTestCall } from "./TestCall";
 import { createTestConn } from "./createTestConn ";
 import { Products } from "../Entities/Products";
+import { graphql } from "graphql";
+
+
+export const graphqlTestCall = async (
+  query: any,
+  variables?: any,
+  userId?: number | string
+) => {};
 
 const registerMutation = `
   mutation {
